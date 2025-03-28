@@ -1,0 +1,302 @@
+<!-- templates/detect_spam.html -->
+{% extends 'base.html' %}
+
+{% block title %}Spam Detective - Detect Spam{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="fas fa-search me-2"></i>Detect Spam</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="text-tab" data-bs-toggle="tab" data-bs-target="#text-input" type="button" role="tab" aria-controls="text-input" aria-selected="true">
+                                <i class="fas fa-keyboard me-2"></i>Text Input
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="upload-tab" data-bs-toggle="tab" data-bs-target="#file-upload" type="button" role="tab" aria-controls="file-upload" aria-selected="false">
+                                <i class="fas fa-file-upload me-2"></i>File Upload
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <!-- Text Input Tab -->
+                        <div class="tab-pane fade show active" id="text-input" role="tabpanel" aria-labelledby="text-tab">
+                            <form action="{{ url_for('detect_spam') }}" method="post" id="text-form">
+                                <div class="mb-3">
+                                    <label for="email_text" class="form-label">Email Content</label>
+                                    <textarea class="form-control" id="email_text" name="email_text" rows="10" placeholder="Paste email content here..."></textarea>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-danger btn-lg">
+                                        <i class="fas fa-search me-2"></i>Detect Spam
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- File Upload Tab -->
+                        <div class="tab-pane fade" id="file-upload" role="tabpanel" aria-labelledby="upload-tab">
+                            <div class="drag-area" id="drag-area">
+                                <div class="icon"><i class="fas fa-cloud-upload-alt fa-3x mb-3 text-primary"></i></div>
+                                <header>Drag & Drop to Upload File</header>
+                                <span>OR</span>
+                                <button type="button" class="btn btn-primary mt-3" id="browse-btn">Browse File</button>
+                                <input type="file" hidden id="file-input" accept=".txt,.eml,.json" />
+                            </div>
+                            
+                            <div id="upload-status" class="mt-3" style="display: none;">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>
+                                    <span id="status-text">Uploading file...</span>
+                                </div>
+                            </div>
+                            
+                            <div id="file-result" class="mt-4" style="display: none;">
+                                <!-- Results will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tips Section -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Tips for Identifying Spam</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Common Spam Indicators:</h5>
+                            <ul>
+                                <li>Urgent requests for money or personal information</li>
+                                <li>Promises of massive rewards or winnings</li>
+                                <li>Poor grammar and spelling errors</li>
+                                <li>Generic greetings like "Dear User" or "Dear Customer"</li>
+                                <li>Suspicious sender email addresses</li>
+                                <li>Requests to click on suspicious links</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>How Our System Works:</h5>
+                            <ul>
+                                <li>Analyzes text patterns common in spam emails</li>
+                                <li>Checks for presence of suspicious URLs</li>
+                                <li>Examines email structure and formatting</li>
+                                <li>Uses machine learning to detect subtle spam patterns</li>
+                                <li>Provides probability scores and explanations</li>
+                                <li>Highlights specific triggers in the email content</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        const dragArea = document.querySelector('#drag-area');
+        const browseBtn = document.querySelector('#browse-btn');
+        const fileInput = document.querySelector('#file-input');
+        const uploadStatus = document.querySelector('#upload-status');
+        const statusText = document.querySelector('#status-text');
+        const fileResult = document.querySelector('#file-result');
+        
+        // When browse button is clicked
+        browseBtn.onclick = () => {
+            fileInput.click();
+        };
+        
+        // When file is selected through file input
+        fileInput.addEventListener('change', function() {
+            if (this.files[0]) {
+                uploadFile(this.files[0]);
+            }
+        });
+        
+        // When file is dragged over drag area
+        dragArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dragArea.classList.add('active');
+        });
+        
+        // When file leaves the drag area
+        dragArea.addEventListener('dragleave', () => {
+            dragArea.classList.remove('active');
+        });
+        
+        // When file is dropped on drag area
+        dragArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragArea.classList.remove('active');
+            
+            if (e.dataTransfer.files.length) {
+                uploadFile(e.dataTransfer.files[0]);
+            }
+        });
+        
+        // Function to upload file
+        function uploadFile(file) {
+            // Check if the file type is allowed
+            const validTypes = ['.txt', '.eml', '.json'];
+            const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+            
+            if (!validTypes.includes(fileExt)) {
+                alert('Invalid file type. Please upload a .txt, .eml, or .json file.');
+                return;
+            }
+            
+            // Show upload status
+            uploadStatus.style.display = 'block';
+            statusText.textContent = 'Analyzing file...';
+            fileResult.style.display = 'none';
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            // Send file to server
+            fetch('{{ url_for("upload_email") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                uploadStatus.style.display = 'none';
+                fileResult.style.display = 'block';
+                
+                if (data.error) {
+                    fileResult.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>${data.error}
+                        </div>
+                    `;
+                } else {
+                    // Determine if spam or ham
+                    const resultClass = data.is_spam ? 'danger' : 'success';
+                    const resultIcon = data.is_spam ? 'exclamation-triangle' : 'check-circle';
+                    const resultText = data.is_spam ? 'SPAM' : 'HAM';
+                    
+                    // Format probability as percentage
+                    const probability = (data.spam_probability * 100).toFixed(2);
+                    
+                    // Create result HTML
+                    let resultHtml = `
+                        <div class="card">
+                            <div class="card-header bg-${resultClass} text-white">
+                                <h4 class="mb-0"><i class="fas fa-${resultIcon} me-2"></i>Analysis Result: <span class="spam-label ${data.is_spam ? 'spam' : 'ham'}">${resultText}</span></h4>
+                            </div>
+                            <div class="card-body">
+                                <h5>File: ${data.filename}</h5>
+                                <div class="mt-4">
+                                    <h5>Spam Probability: ${probability}%</h5>
+                                    <div class="progress mt-2 mb-4">
+                                        <div class="progress-bar bg-${resultClass}" role="progressbar" style="width: ${probability}%" aria-valuenow="${probability}" aria-valuemin="0" aria-valuemax="100">${probability}%</div>
+                                    </div>
+                                </div>
+                    `;
+                    
+                    // Add email statistics
+                    resultHtml += `
+                        <div class="mt-4">
+                            <h5>Email Statistics:</h5>
+                            <div class="row mt-3">
+                                <div class="col-md-3 mb-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h3>${data.email_length}</h3>
+                                            <p class="text-muted mb-0">Characters</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h3>${data.word_count}</h3>
+                                            <p class="text-muted mb-0">Words</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h3>${data.url_count}</h3>
+                                            <p class="text-muted mb-0">URLs</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h3>${data.has_html ? 'Yes' : 'No'}</h3>
+                                            <p class="text-muted mb-0">Contains HTML</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add important features if available
+                    if (data.important_features && data.important_features.length > 0) {
+                        resultHtml += `
+                            <div class="mt-4">
+                                <h5>Key Features that Influenced Classification:</h5>
+                                <div class="row mt-3">
+                        `;
+                        
+                        data.important_features.forEach(feature => {
+                            const featureClass = feature.coefficient > 0 ? 'feature-spam' : 'feature-ham';
+                            const featureText = feature.coefficient > 0 ? 'Indicates Spam' : 'Indicates Ham';
+                            
+                            resultHtml += `
+                                <div class="col-md-6 mb-3">
+                                    <div class="feature-item ${featureClass}">
+                                        <strong>"${feature.feature}"</strong>
+                                        <span class="float-end badge ${feature.coefficient > 0 ? 'bg-danger' : 'bg-success'}">${featureText}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        resultHtml += `
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    resultHtml += `
+                            </div>
+                        </div>
+                    `;
+                    
+                    fileResult.innerHTML = resultHtml;
+                }
+            })
+            .catch(error => {
+                uploadStatus.style.display = 'none';
+                fileResult.style.display = 'block';
+                fileResult.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>An error occurred: ${error.message}
+                    </div>
+                `;
+            });
+        }
+    });
+</script>
+{% endblock %}

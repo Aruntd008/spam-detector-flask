@@ -1,0 +1,211 @@
+<!-- templates/data_stats.html -->
+{% extends 'base.html' %}
+
+{% block title %}Spam Detective - Data Statistics{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Dataset Statistics</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Dataset successfully loaded and processed!
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-3 mb-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-envelope fa-3x text-primary mb-3"></i>
+                                    <h2 class="display-4">{{ stats.total_emails }}</h2>
+                                    <p class="lead">Total Emails</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                    <h2 class="display-4">{{ stats.ham_emails }}</h2>
+                                    <p class="lead">Ham Emails</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-ban fa-3x text-danger mb-3"></i>
+                                    <h2 class="display-4">{{ stats.spam_emails }}</h2>
+                                    <p class="lead">Spam Emails</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-percent fa-3x text-warning mb-3"></i>
+                                    <h2 class="display-4">{{ "%.1f"|format(stats.spam_ratio * 100) }}%</h2>
+                                    <p class="lead">Spam Ratio</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Visualization -->
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Distribution of Emails</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <canvas id="emailDistributionChart" width="400" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Spam vs. Ham Ratio</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <canvas id="spamRatioChart" width="400" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Next Steps -->
+                    <div class="mt-4">
+                        <h5>Next Steps:</h5>
+                        <div class="d-grid gap-2 d-md-flex mt-3">
+                            <a href="{{ url_for('train_model') }}" class="btn btn-success btn-lg">
+                                <i class="fas fa-cogs me-2"></i>Train Model
+                            </a>
+                            <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-home me-2"></i>Return to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dataset Information -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>About the Dataset</h4>
+                </div>
+                <div class="card-body">
+                    <p>This dataset consists of emails categorized into different groups:</p>
+                    <ul>
+                        <li><strong>easy-ham-1 & easy-ham-2:</strong> Legitimate emails that are relatively easy to classify</li>
+                        <li><strong>hard-ham-1:</strong> Legitimate emails that might be harder to distinguish from spam</li>
+                        <li><strong>spam-1 & spam-2:</strong> Spam emails collected at different time periods</li>
+                    </ul>
+                    
+                    <p class="mt-3">The dataset has been preprocessed and feature extraction has been performed to prepare it for model training. This includes:</p>
+                    <ul>
+                        <li>Text cleaning and normalization</li>
+                        <li>Extraction of email length and word count statistics</li>
+                        <li>Detection of HTML content and URLs</li>
+                        <li>Identification of common spam indicators</li>
+                    </ul>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Tip:</strong> When training your model, consider the balance between spam and ham emails in the dataset. A well-balanced dataset tends to produce more robust models.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Email Distribution Chart
+    var ctxDistribution = document.getElementById('emailDistributionChart').getContext('2d');
+    var distributionChart = new Chart(ctxDistribution, {
+        type: 'bar',
+        data: {
+            labels: ['Ham', 'Spam'],
+            datasets: [{
+                label: 'Number of Emails',
+                data: [{{ stats.ham_emails }}, {{ stats.spam_emails }}],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.7)',
+                    'rgba(220, 53, 69, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(40, 167, 69, 1)',
+                    'rgba(220, 53, 69, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+    
+    // Spam Ratio Chart
+    var ctxRatio = document.getElementById('spamRatioChart').getContext('2d');
+    var ratioChart = new Chart(ctxRatio, {
+        type: 'pie',
+        data: {
+            labels: ['Ham', 'Spam'],
+            datasets: [{
+                data: [{{ stats.ham_emails }}, {{ stats.spam_emails }}],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.7)',
+                    'rgba(220, 53, 69, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(40, 167, 69, 1)',
+                    'rgba(220, 53, 69, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            var label = context.label || '';
+                            var value = context.raw;
+                            var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            var percentage = Math.round((value / total) * 100);
+                            return label + ': ' + value + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

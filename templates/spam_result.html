@@ -1,0 +1,161 @@
+<!-- templates/spam_result.html -->
+{% extends 'base.html' %}
+
+{% block title %}Spam Detective - Analysis Result{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <!-- Result Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-{{ 'danger' if result.is_spam else 'success' }} text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-{{ 'exclamation-triangle' if result.is_spam else 'check-circle' }} me-2"></i>
+                        Analysis Result: <span class="spam-label {{ 'spam' if result.is_spam else 'ham' }}">{{ 'SPAM' if result.is_spam else 'HAM' }}</span>
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="mt-2 mb-4">
+                        <h5>Spam Probability: {{ "%.2f"|format(result.spam_probability * 100) }}%</h5>
+                        <div class="progress mt-2">
+                            <div class="progress-bar bg-{{ 'danger' if result.is_spam else 'success' }}" role="progressbar" 
+                                style="width: {{ result.spam_probability * 100 }}%" 
+                                aria-valuenow="{{ result.spam_probability * 100 }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ "%.2f"|format(result.spam_probability * 100) }}%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Statistics -->
+                    <div class="mt-4">
+                        <h5>Email Statistics:</h5>
+                        <div class="row mt-3">
+                            <div class="col-md-3 mb-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3>{{ result.email_length }}</h3>
+                                        <p class="text-muted mb-0">Characters</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3>{{ result.word_count }}</h3>
+                                        <p class="text-muted mb-0">Words</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3>{{ result.url_count }}</h3>
+                                        <p class="text-muted mb-0">URLs</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h3>{{ 'Yes' if result.has_html else 'No' }}</h3>
+                                        <p class="text-muted mb-0">Contains HTML</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Important Features -->
+                    {% if result.important_features %}
+                    <div class="mt-4">
+                        <h5>Key Features that Influenced Classification:</h5>
+                        <div class="row mt-3">
+                            {% for feature in result.important_features %}
+                            <div class="col-md-6 mb-3">
+                                <div class="feature-item {{ 'feature-spam' if feature.coefficient > 0 else 'feature-ham' }}">
+                                    <strong>"{{ feature.feature }}"</strong>
+                                    <span class="float-end badge {{ 'bg-danger' if feature.coefficient > 0 else 'bg-success' }}">
+                                        {{ 'Indicates Spam' if feature.coefficient > 0 else 'Indicates Ham' }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Email Content -->
+                    <div class="mt-4">
+                        <h5>Analyzed Email:</h5>
+                        <div class="email-container mt-3">
+                            <pre>{{ email_text }}</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="d-grid gap-2 d-md-flex">
+                            <a href="{{ url_for('detect_spam') }}" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Analyze Another Email
+                            </a>
+                            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                                <i class="fas fa-home me-2"></i>Back to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Explanation Card -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Understanding This Result</h4>
+                </div>
+                <div class="card-body">
+                    <p>Our machine learning model has analyzed this email and determined it {% if result.is_spam %}is <strong>likely spam</strong>{% else %}is <strong>likely legitimate</strong>{% endif %} with {{ "%.2f"|format(result.spam_probability * 100) }}% confidence.</p>
+                    
+                    <h5 class="mt-4">What This Means:</h5>
+                    {% if result.is_spam %}
+                    <ul>
+                        <li>This email exhibits patterns commonly found in spam or unwanted messages</li>
+                        <li>The content may contain suspicious terms, offers, or requests</li>
+                        <li>Exercise caution when dealing with this email, especially if it asks for personal information or contains links</li>
+                    </ul>
+                    {% else %}
+                    <ul>
+                        <li>This email exhibits patterns typically found in legitimate messages</li>
+                        <li>The content appears to be free of typical spam indicators</li>
+                        <li>However, always use your judgment as even legitimate-looking emails can sometimes be sophisticated phishing attempts</li>
+                    </ul>
+                    {% endif %}
+                    
+                    <h5 class="mt-4">Key Indicators:</h5>
+                    <ul>
+                        {% if result.important_features %}
+                            {% for feature in result.important_features[:5] %}
+                                <li>
+                                    <strong>{{ feature.feature }}</strong>: 
+                                    {% if feature.coefficient > 0 %}
+                                        This term is associated with spam messages
+                                    {% else %}
+                                        This term is typically found in legitimate emails
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li>Length and structure of the email</li>
+                            <li>Presence of URLs ({{ result.url_count }} found)</li>
+                            <li>HTML content ({{ 'Present' if result.has_html else 'Not present' }})</li>
+                            <li>Overall vocabulary and language patterns</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

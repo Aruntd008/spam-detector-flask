@@ -1,0 +1,137 @@
+<!-- templates/train_model.html -->
+{% extends 'base.html' %}
+
+{% block title %}Spam Detective - Train Model{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-cogs me-2"></i>Train New Model</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Note:</strong> You need to load the dataset first before training a model. If you haven't loaded data yet, please go to the <a href="{{ url_for('load_data') }}">Load Data</a> page.
+                    </div>
+                    
+                    <form action="{{ url_for('train_model') }}" method="post">
+                        <div class="mb-4">
+                            <label class="form-label">Select Algorithm:</label>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="model_type" id="logistic" value="logistic" checked>
+                                                <label class="form-check-label" for="logistic">
+                                                    <h5>Logistic Regression</h5>
+                                                </label>
+                                            </div>
+                                            <p class="text-muted">A linear classification algorithm that works well for text categorization. Provides interpretable feature importance.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="model_type" id="naive_bayes" value="naive_bayes">
+                                                <label class="form-check-label" for="naive_bayes">
+                                                    <h5>Naive Bayes</h5>
+                                                </label>
+                                            </div>
+                                            <p class="text-muted">Probabilistic classifier based on Bayes' theorem. Fast training and good performance for text classification.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="model_type" id="random_forest" value="random_forest">
+                                                <label class="form-check-label" for="random_forest">
+                                                    <h5>Random Forest</h5>
+                                                </label>
+                                            </div>
+                                            <p class="text-muted">Ensemble learning method using multiple decision trees. Robust and handles non-linear relationships well.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-cogs me-2"></i>Train Model
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Training Details -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Model Training Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Training Process:</h5>
+                            <ol>
+                                <li>Dataset is loaded and preprocessed</li>
+                                <li>Text is vectorized using TF-IDF (Term Frequency-Inverse Document Frequency)</li>
+                                <li>Data is split into training (80%) and testing (20%) sets</li>
+                                <li>The selected algorithm is trained on the training data</li>
+                                <li>Model performance is evaluated on the test set</li>
+                                <li>The trained model is saved for future use</li>
+                            </ol>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>About the Algorithms:</h5>
+                            <dl>
+                                <dt>Logistic Regression</dt>
+                                <dd>
+                                    <ul>
+                                        <li>Linear model for binary classification</li>
+                                        <li>Works well with high-dimensional data like text</li>
+                                        <li>Provides interpretable feature importances</li>
+                                        <li>Good balance of simplicity and performance</li>
+                                    </ul>
+                                </dd>
+                                
+                                <dt>Naive Bayes</dt>
+                                <dd>
+                                    <ul>
+                                        <li>Fast training and prediction</li>
+                                        <li>Based on Bayes' theorem and feature independence assumption</li>
+                                        <li>Often performs well on text classification</li>
+                                        <li>Requires less training data</li>
+                                    </ul>
+                                </dd>
+                                
+                                <dt>Random Forest</dt>
+                                <dd>
+                                    <ul>
+                                        <li>Ensemble of many decision trees</li>
+                                        <li>Can capture complex non-linear patterns</li>
+                                        <li>Resistant to overfitting</li>
+                                        <li>Handles a mixture of feature types well</li>
+                                    </ul>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+<!-- templates/model_trained.html -->
+{% extends 'base.html' %}
+
+{% block title %}Spam Detective - Model Trained{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-check-circle me-2"></i>Model Training Complete</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Your spam detection model has been successfully trained and is ready to use!
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h5>Model Information:</h5>
+                            <table class="table table-bordered mt-3">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 30%">Algorithm</th>
+                                        <td>
+                                            <span class="model-badge">{{ stats.model_type }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Training Date</th>
+                                        <td>{{ now().strftime('%B %d, %Y at %H:%M') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Training Set Size</th>
+                                        <td>{{ stats.train_size }} emails</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Test Set Size</th>
+                                        <td>{{ stats.test_size }} emails</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Model Performance Metrics -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h5>Model Performance:</h5>
+                            <div class="row mt-3">
+                                <div class="col-md-3 mb-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="display-4 text-success">{{ "%.2f"|format(stats.accuracy * 100) }}%</div>
+                                            <p class="text-muted mb-0">Accuracy</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="display-4 text-primary">{{ "%.2f"|format(stats.precision * 100) }}%</div>
+                                            <p class="text-muted mb-0">Precision</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="display-4 text-info">{{ "%.2f"|format(stats.recall * 100) }}%</div>
+                                            <p class="text-muted mb-0">Recall</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="display-4 text-warning">{{ "%.2f"|format(stats.f1 * 100) }}%</div>
+                                            <p class="text-muted mb-0">F1 Score</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Confusion Matrix -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Confusion Matrix:</h5>
+                            <div class="text-center mt-3">
+                                <img src="data:image/png;base64,{{ stats.confusion_matrix }}" class="img-fluid" alt="Confusion Matrix">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Understanding Performance Metrics:</h5>
+                            <ul class="mt-3">
+                                <li><strong>Accuracy:</strong> The proportion of emails correctly classified (both spam and ham)</li>
+                                <li><strong>Precision:</strong> Of all emails classified as spam, what percentage are actually spam</li>
+                                <li><strong>Recall:</strong> Of all actual spam emails, what percentage did we correctly identify</li>
+                                <li><strong>F1 Score:</strong> The harmonic mean of precision and recall</li>
+                            </ul>
+                            <div class="alert alert-info mt-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Tip:</strong> For spam detection, high precision is important to avoid falsely classifying legitimate emails as spam.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Next Steps -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h5>Next Steps:</h5>
+                            <div class="d-grid gap-2 d-md-flex mt-3">
+                                <a href="{{ url_for('detect_spam') }}" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-search me-2"></i>Detect Spam
+                                </a>
+                                <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-home me-2"></i>Return to Home
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

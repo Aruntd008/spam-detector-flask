@@ -1,0 +1,206 @@
+<!-- templates/index.html -->
+{% extends 'base.html' %}
+
+{% block title %}Spam Detective - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">Detect Email Spam with AI</h1>
+                <p class="lead">Protect yourself from unwanted and potentially dangerous emails with our advanced machine learning spam detection system.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
+                    <a href="{{ url_for('detect_spam') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                        <i class="fas fa-search me-2"></i>Analyze Email
+                    </a>
+                    <a href="{{ url_for('train_model') }}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-cogs me-2"></i>Train Model
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="https://cdn.pixabay.com/photo/2016/12/21/16/34/email-1923444_960_720.png" class="img-fluid" alt="Email Protection">
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container mb-5">
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="d-grid">
+                                <a href="{{ url_for('load_data') }}" class="btn btn-outline-primary btn-lg">
+                                    <i class="fas fa-database me-2"></i>Load Dataset
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="d-grid">
+                                <a href="{{ url_for('train_model') }}" class="btn btn-outline-success btn-lg">
+                                    <i class="fas fa-cogs me-2"></i>Train New Model
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-grid">
+                                <a href="{{ url_for('detect_spam') }}" class="btn btn-outline-danger btn-lg">
+                                    <i class="fas fa-search me-2"></i>Detect Spam
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Existing Model -->
+    {% if available_models %}
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0"><i class="fas fa-upload me-2"></i>Load Existing Model</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('load_model') }}" method="post">
+                        <div class="row">
+                            <div class="col-md-8 mb-3 mb-md-0">
+                                <select name="model_file" class="form-select form-select-lg">
+                                    {% for model in available_models %}
+                                    <option value="{{ model }}">{{ model }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-info btn-lg text-white">
+                                        <i class="fas fa-upload me-2"></i>Load Model
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Features Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 class="text-center mb-4">Key Features</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="dashboard-stat">
+                <div class="stat-icon text-primary">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>Machine Learning</h3>
+                <p>Uses advanced machine learning algorithms to classify emails as spam or legitimate.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="dashboard-stat">
+                <div class="stat-icon text-success">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>High Accuracy</h3>
+                <p>Achieves high accuracy rates by analyzing multiple features of an email.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="dashboard-stat">
+                <div class="stat-icon text-danger">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Detailed Analysis</h3>
+                <p>Provides detailed analysis of why an email was classified as spam or legitimate.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="dashboard-stat">
+                <div class="stat-icon text-info">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>Customizable</h3>
+                <p>Train your own models using different algorithms for optimal performance.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="dashboard-stat">
+                <div class="stat-icon text-warning">
+                    <i class="fas fa-file-upload"></i>
+                </div>
+                <h3>File Upload</h3>
+                <p>Upload email files directly or paste email content for instant analysis.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="dashboard-stat">
+                <div class="stat-icon text-secondary">
+                    <i class="fas fa-save"></i>
+                </div>
+                <h3>Save Models</h3>
+                <p>Save and load trained models for future use without retraining.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="row mb-4 mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0"><i class="fas fa-question-circle me-2"></i>How It Works</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3 mb-md-0">
+                            <div class="p-3 bg-light rounded">
+                                <i class="fas fa-database text-primary fa-3x mb-3"></i>
+                                <h5>1. Load Data</h5>
+                                <p class="mb-0">Load email datasets for training.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3 mb-md-0">
+                            <div class="p-3 bg-light rounded">
+                                <i class="fas fa-cogs text-success fa-3x mb-3"></i>
+                                <h5>2. Train Model</h5>
+                                <p class="mb-0">Train ML models to recognize spam patterns.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3 mb-md-0">
+                            <div class="p-3 bg-light rounded">
+                                <i class="fas fa-upload text-info fa-3x mb-3"></i>
+                                <h5>3. Input Email</h5>
+                                <p class="mb-0">Upload or paste email content.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="p-3 bg-light rounded">
+                                <i class="fas fa-check-circle text-danger fa-3x mb-3"></i>
+                                <h5>4. Get Results</h5>
+                                <p class="mb-0">Receive detailed spam analysis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
