@@ -18,52 +18,242 @@
                     </div>
                     
                     <form action="{{ url_for('train_model') }}" method="post">
-                        <div class="mb-4">
-                            <label class="form-label">Select Algorithm:</label>
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="model_type" id="logistic" value="logistic" checked>
-                                                <label class="form-check-label" for="logistic">
-                                                    <h5>Logistic Regression</h5>
-                                                </label>
+                        <!-- Model Selection Tabs -->
+                        <ul class="nav nav-tabs mb-4" id="modelTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="traditional-tab" data-bs-toggle="tab" data-bs-target="#traditional" type="button" role="tab" aria-controls="traditional" aria-selected="true">
+                                    <i class="fas fa-chart-line me-2"></i>Traditional Models
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="advanced-tab" data-bs-toggle="tab" data-bs-target="#advanced" type="button" role="tab" aria-controls="advanced" aria-selected="false">
+                                    <i class="fas fa-rocket me-2"></i>Advanced Models
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="ensemble-tab" data-bs-toggle="tab" data-bs-target="#ensemble" type="button" role="tab" aria-controls="ensemble" aria-selected="false">
+                                    <i class="fas fa-layer-group me-2"></i>Ensemble Methods
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="deep-tab" data-bs-toggle="tab" data-bs-target="#deep" type="button" role="tab" aria-controls="deep" aria-selected="false">
+                                    <i class="fas fa-brain me-2"></i>Deep Learning
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="modelTabsContent">
+                            <!-- Traditional Models Tab -->
+                            <div class="tab-pane fade show active" id="traditional" role="tabpanel" aria-labelledby="traditional-tab">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="logistic" value="logistic" checked>
+                                                    <label class="form-check-label" for="logistic">
+                                                        <h5>Logistic Regression</h5>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">A linear classification algorithm that works well for text categorization. Provides interpretable feature importance.</p>
                                             </div>
-                                            <p class="text-muted">A linear classification algorithm that works well for text categorization. Provides interpretable feature importance.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="naive_bayes" value="naive_bayes">
+                                                    <label class="form-check-label" for="naive_bayes">
+                                                        <h5>Naive Bayes</h5>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">Probabilistic classifier based on Bayes' theorem. Fast training and good performance for text classification.</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="model_type" id="naive_bayes" value="naive_bayes">
-                                                <label class="form-check-label" for="naive_bayes">
-                                                    <h5>Naive Bayes</h5>
-                                                </label>
+                            </div>
+                            
+                            <!-- Advanced Models Tab -->
+                            <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="random_forest" value="random_forest">
+                                                    <label class="form-check-label" for="random_forest">
+                                                        <h5>Random Forest</h5>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">Ensemble learning method using multiple decision trees. Robust and handles non-linear relationships well.</p>
                                             </div>
-                                            <p class="text-muted">Probabilistic classifier based on Bayes' theorem. Fast training and good performance for text classification.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="xgboost" value="xgboost">
+                                                    <label class="form-check-label" for="xgboost">
+                                                        <h5>XGBoost</h5>
+                                                        <span class="badge bg-primary">Advanced</span>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">Gradient boosting framework known for its speed and performance. Often wins ML competitions.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="lightgbm" value="lightgbm">
+                                                    <label class="form-check-label" for="lightgbm">
+                                                        <h5>LightGBM</h5>
+                                                        <span class="badge bg-primary">Advanced</span>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">Gradient boosting framework focused on efficiency. Faster training speed and lower memory usage.</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="model_type" id="random_forest" value="random_forest">
-                                                <label class="form-check-label" for="random_forest">
-                                                    <h5>Random Forest</h5>
-                                                </label>
+                            </div>
+                            
+                            <!-- Ensemble Methods Tab -->
+                            <div class="tab-pane fade" id="ensemble" role="tabpanel" aria-labelledby="ensemble-tab">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="voting" value="voting">
+                                                    <label class="form-check-label" for="voting">
+                                                        <h5>Voting Ensemble</h5>
+                                                        <span class="badge bg-primary">Advanced</span>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">Combines multiple models (LR, NB, RF, XGB) with soft voting. Reduces overfitting and improves stability.</p>
                                             </div>
-                                            <p class="text-muted">Ensemble learning method using multiple decision trees. Robust and handles non-linear relationships well.</p>
                                         </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="stacking" value="stacking">
+                                                    <label class="form-check-label" for="stacking">
+                                                        <h5>Stacking Ensemble</h5>
+                                                        <span class="badge bg-primary">Advanced</span>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">Multi-level model combining LR, NB, and RF with XGBoost meta-learner. Often achieves higher accuracy.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning mt-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Note:</strong> Ensemble methods take longer to train but generally provide better performance.
+                                </div>
+                            </div>
+                            
+                            <!-- Deep Learning Tab -->
+                            <div class="tab-pane fade" id="deep" role="tabpanel" aria-labelledby="deep-tab">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="lstm" value="lstm">
+                                                    <label class="form-check-label" for="lstm">
+                                                        <h5>LSTM with Word Embeddings</h5>
+                                                        <span class="badge bg-danger">Deep Learning</span>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">Long Short-Term Memory neural network with Word2Vec embeddings. Excellent for capturing sequential patterns in text.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="cnn" value="cnn">
+                                                    <label class="form-check-label" for="cnn">
+                                                        <h5>CNN with Word Embeddings</h5>
+                                                        <span class="badge bg-danger">Deep Learning</span>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">Convolutional Neural Network with Word2Vec embeddings. Efficient at capturing local patterns and n-gram features.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="model_type" id="bert" value="bert">
+                                                    <label class="form-check-label" for="bert">
+                                                        <h5>BERT Transformer</h5>
+                                                        <span class="badge bg-danger">Deep Learning</span>
+                                                    </label>
+                                                </div>
+                                                <p class="text-muted">State-of-the-art transformer model with contextual embeddings. Best performance for text classification but more resource-intensive.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning mt-3">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Warning:</strong> Deep learning models require significantly more time and resources to train. BERT especially requires a powerful system.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Hyperparameter Tuning Section -->
+                        <div class="card mt-4">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-sliders-h me-2"></i>Hyperparameter Tuning</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="hp_tuning" name="hp_tuning">
+                                    <label class="form-check-label" for="hp_tuning">
+                                        Enable Hyperparameter Tuning
+                                    </label>
+                                </div>
+                                
+                                <div id="tuning_options" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tuning Method:</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tuning_method" id="grid_search" value="grid" checked>
+                                            <label class="form-check-label" for="grid_search">
+                                                Grid Search (exhaustive, slower)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tuning_method" id="random_search" value="random">
+                                            <label class="form-check-label" for="random_search">
+                                                Random Search (faster, less exhaustive)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Note:</strong> Hyperparameter tuning will significantly increase training time but may result in better model performance. 
+                                        Not available for ensemble or deep learning models.
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="d-grid gap-2">
+                        <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-success btn-lg">
                                 <i class="fas fa-cogs me-2"></i>Train Model
                             </button>
@@ -79,54 +269,61 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-dark text-white">
-                    <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Model Training Information</h4>
+                    <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Advanced Model Information</h4>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h5>Training Process:</h5>
-                            <ol>
-                                <li>Dataset is loaded and preprocessed</li>
-                                <li>Text is vectorized using TF-IDF (Term Frequency-Inverse Document Frequency)</li>
-                                <li>Data is split into training (80%) and testing (20%) sets</li>
-                                <li>The selected algorithm is trained on the training data</li>
-                                <li>Model performance is evaluated on the test set</li>
-                                <li>The trained model is saved for future use</li>
-                            </ol>
+                            <h5>Word Embeddings:</h5>
+                            <p>Word embeddings represent words as dense vectors in a continuous vector space, where semantically similar words are mapped to nearby points. Our advanced models use:</p>
+                            <ul>
+                                <li><strong>Word2Vec</strong>: Creates word vectors based on the context in which words appear</li>
+                                <li><strong>BERT Embeddings</strong>: Contextual embeddings that change based on the entire sentence</li>
+                            </ul>
+                            <p>These techniques help the models understand semantic relationships between words instead of treating them as isolated tokens.</p>
                         </div>
                         <div class="col-md-6">
-                            <h5>About the Algorithms:</h5>
-                            <dl>
-                                <dt>Logistic Regression</dt>
-                                <dd>
-                                    <ul>
-                                        <li>Linear model for binary classification</li>
-                                        <li>Works well with high-dimensional data like text</li>
-                                        <li>Provides interpretable feature importances</li>
-                                        <li>Good balance of simplicity and performance</li>
-                                    </ul>
-                                </dd>
-                                
-                                <dt>Naive Bayes</dt>
-                                <dd>
-                                    <ul>
-                                        <li>Fast training and prediction</li>
-                                        <li>Based on Bayes' theorem and feature independence assumption</li>
-                                        <li>Often performs well on text classification</li>
-                                        <li>Requires less training data</li>
-                                    </ul>
-                                </dd>
-                                
-                                <dt>Random Forest</dt>
-                                <dd>
-                                    <ul>
-                                        <li>Ensemble of many decision trees</li>
-                                        <li>Can capture complex non-linear patterns</li>
-                                        <li>Resistant to overfitting</li>
-                                        <li>Handles a mixture of feature types well</li>
-                                    </ul>
-                                </dd>
-                            </dl>
+                            <h5>Ensemble Methods:</h5>
+                            <p>Ensemble methods combine multiple models to improve performance:</p>
+                            <ul>
+                                <li><strong>Voting</strong>: Combines predictions from multiple models through majority voting or averaging</li>
+                                <li><strong>Stacking</strong>: Uses predictions from base models as features for a meta-learner model</li>
+                            </ul>
+                            <p>These approaches typically provide better accuracy and robustness than single models.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>Gradient Boosting:</h5>
+                            <p>Gradient boosting builds models sequentially, with each new model correcting errors made by previous ones:</p>
+                            <ul>
+                                <li><strong>XGBoost</strong>: Optimized implementation with regularization to prevent overfitting</li>
+                                <li><strong>LightGBM</strong>: Faster training with leaf-wise tree growth and histogram-based splitting</li>
+                            </ul>
+                            <p>These algorithms often achieve state-of-the-art results on tabular data.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Deep Learning Models:</h5>
+                            <p>Neural network architectures specialized for text processing:</p>
+                            <ul>
+                                <li><strong>LSTM</strong>: Captures long-range dependencies in sequential data</li>
+                                <li><strong>CNN</strong>: Identifies local patterns (like n-grams) in text</li>
+                                <li><strong>BERT</strong>: Transformer architecture that understands context in both directions</li>
+                            </ul>
+                            <p>Deep learning models often outperform traditional approaches for complex language tasks.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h5>Hyperparameter Tuning:</h5>
+                            <p>Automatic optimization of model parameters to improve performance:</p>
+                            <ul>
+                                <li><strong>Grid Search</strong>: Exhaustive search over specified parameter values</li>
+                                <li><strong>Random Search</strong>: Samples parameter combinations randomly, often more efficient</li>
+                            </ul>
+                            <p>Tuning can significantly improve model accuracy but increases training time.</p>
                         </div>
                     </div>
                 </div>
@@ -134,4 +331,42 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // Show/hide hyperparameter tuning options
+        $('#hp_tuning').change(function() {
+            if(this.checked) {
+                $('#tuning_options').slideDown();
+            } else {
+                $('#tuning_options').slideUp();
+            }
+        });
+        
+        // Disable hyperparameter tuning for ensemble and deep learning models
+        $('input[name="model_type"]').change(function() {
+            var selectedModel = $(this).val();
+            var deepLearningModels = ['lstm', 'cnn', 'bert'];
+            var ensembleModels = ['voting', 'stacking'];
+            
+            if(deepLearningModels.includes(selectedModel) || ensembleModels.includes(selectedModel)) {
+                $('#hp_tuning').prop('checked', false).prop('disabled', true);
+                $('#tuning_options').slideUp();
+                
+                if(deepLearningModels.includes(selectedModel)) {
+                    $('#tuning_disabled_reason').text('Hyperparameter tuning is not available for deep learning models.');
+                } else {
+                    $('#tuning_disabled_reason').text('Hyperparameter tuning is not available for ensemble models.');
+                }
+                
+                $('#tuning_disabled_message').show();
+            } else {
+                $('#hp_tuning').prop('disabled', false);
+                $('#tuning_disabled_message').hide();
+            }
+        });
+    });
+</script>
 {% endblock %}

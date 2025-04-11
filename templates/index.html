@@ -10,7 +10,7 @@
         <div class="row align-items-center">
             <div class="col-lg-6">
                 <h1 class="display-4 fw-bold">Detect Email Spam with AI</h1>
-                <p class="lead">Protect yourself from unwanted and potentially dangerous emails with our advanced machine learning spam detection system.</p>
+                <p class="lead">Protect yourself from unwanted and potentially dangerous emails with our advanced machine learning and deep learning spam detection system.</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
                     <a href="{{ url_for('detect_spam') }}" class="btn btn-primary btn-lg px-4 me-md-2">
                         <i class="fas fa-search me-2"></i>Analyze Email
@@ -29,37 +29,33 @@
 
 <div class="container mb-5">
     <!-- Quick Actions -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <div class="d-grid">
-                                <a href="{{ url_for('load_data') }}" class="btn btn-outline-primary btn-lg">
-                                    <i class="fas fa-database me-2"></i>Load Dataset
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <div class="d-grid">
-                                <a href="{{ url_for('train_model') }}" class="btn btn-outline-success btn-lg">
-                                    <i class="fas fa-cogs me-2"></i>Train New Model
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="d-grid">
-                                <a href="{{ url_for('detect_spam') }}" class="btn btn-outline-danger btn-lg">
-                                    <i class="fas fa-search me-2"></i>Detect Spam
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="d-grid">
+                <a href="{{ url_for('load_data') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-database me-2"></i>Load Dataset
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="d-grid">
+                <a href="{{ url_for('train_model') }}" class="btn btn-outline-success btn-lg">
+                    <i class="fas fa-cogs me-2"></i>Train New Model
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <div class="d-grid">
+                <a href="{{ url_for('detect_spam') }}" class="btn btn-outline-danger btn-lg">
+                    <i class="fas fa-search me-2"></i>Detect Spam
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="d-grid">
+                <a href="{{ url_for('compare_models') }}" class="btn btn-outline-info btn-lg">
+                    <i class="fas fa-chart-bar me-2"></i>Compare Models
+                </a>
             </div>
         </div>
     </div>
@@ -97,6 +93,27 @@
     </div>
     {% endif %}
 
+    <!-- Advanced ML Banner -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card bg-dark text-white">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h3><i class="fas fa-brain me-2"></i>Enhanced with Advanced AI</h3>
+                            <p class="lead mb-0">Our system now includes cutting-edge deep learning models, word embeddings, and gradient boosting algorithms for superior spam detection accuracy.</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('train_model') }}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-rocket me-2"></i>Try Advanced Models
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Features Section -->
     <div class="row mb-4">
         <div class="col-md-12">
@@ -109,8 +126,8 @@
                 <div class="stat-icon text-primary">
                     <i class="fas fa-robot"></i>
                 </div>
-                <h3>Machine Learning</h3>
-                <p>Uses advanced machine learning algorithms to classify emails as spam or legitimate.</p>
+                <h3>Advanced AI</h3>
+                <p>Utilizes state-of-the-art machine learning and deep learning models to classify emails with high accuracy.</p>
             </div>
         </div>
         <div class="col-md-4 mb-4">
@@ -119,7 +136,7 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <h3>High Accuracy</h3>
-                <p>Achieves high accuracy rates by analyzing multiple features of an email.</p>
+                <p>Ensemble methods and neural networks achieve superior detection rates compared to traditional approaches.</p>
             </div>
         </div>
         <div class="col-md-4 mb-4">
@@ -128,16 +145,16 @@
                     <i class="fas fa-search"></i>
                 </div>
                 <h3>Detailed Analysis</h3>
-                <p>Provides detailed analysis of why an email was classified as spam or legitimate.</p>
+                <p>Provides comprehensive analysis of why an email was classified as spam or legitimate.</p>
             </div>
         </div>
         <div class="col-md-4 mb-4">
             <div class="dashboard-stat">
                 <div class="stat-icon text-info">
-                    <i class="fas fa-cogs"></i>
+                    <i class="fas fa-brain"></i>
                 </div>
-                <h3>Customizable</h3>
-                <p>Train your own models using different algorithms for optimal performance.</p>
+                <h3>Word Embeddings</h3>
+                <p>Uses semantic word representations to understand context and meaning, not just keyword matching.</p>
             </div>
         </div>
         <div class="col-md-4 mb-4">
@@ -146,16 +163,77 @@
                     <i class="fas fa-file-upload"></i>
                 </div>
                 <h3>File Upload</h3>
-                <p>Upload email files directly or paste email content for instant analysis.</p>
+                <p>Upload email files directly or paste email content for instant analysis using powerful AI models.</p>
             </div>
         </div>
         <div class="col-md-4 mb-4">
             <div class="dashboard-stat">
                 <div class="stat-icon text-secondary">
-                    <i class="fas fa-save"></i>
+                    <i class="fas fa-sliders-h"></i>
                 </div>
-                <h3>Save Models</h3>
-                <p>Save and load trained models for future use without retraining.</p>
+                <h3>Hyperparameter Tuning</h3>
+                <p>Automatic optimization of model parameters for the best possible performance.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced ML Section -->
+    <div class="row mb-4 mt-5">
+        <div class="col-md-12">
+            <h2 class="text-center mb-4">Advanced ML Technologies</h2>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="fas fa-brain me-2"></i>Deep Learning Models</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            <i class="fas fa-project-diagram fa-3x text-danger mb-3"></i>
+                            <h5>LSTM Networks</h5>
+                            <p class="small">Capture long-range dependencies in text sequences</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            <i class="fas fa-layer-group fa-3x text-danger mb-3"></i>
+                            <h5>CNN Models</h5>
+                            <p class="small">Identify local patterns and n-gram features</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-language fa-3x text-danger mb-3"></i>
+                            <h5>BERT Transformer</h5>
+                            <p class="small">Contextual understanding of text meaning</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-layer-group me-2"></i>Ensemble Methods</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            <i class="fas fa-vote-yea fa-3x text-primary mb-3"></i>
+                            <h5>Voting</h5>
+                            <p class="small">Combines multiple models through weighted voting</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            <i class="fas fa-cubes fa-3x text-primary mb-3"></i>
+                            <h5>Stacking</h5>
+                            <p class="small">Uses model predictions as meta-features</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                            <h5>Gradient Boosting</h5>
+                            <p class="small">Sequentially builds trees to reduce errors</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -180,7 +258,7 @@
                             <div class="p-3 bg-light rounded">
                                 <i class="fas fa-cogs text-success fa-3x mb-3"></i>
                                 <h5>2. Train Model</h5>
-                                <p class="mb-0">Train ML models to recognize spam patterns.</p>
+                                <p class="mb-0">Train AI models to recognize spam patterns.</p>
                             </div>
                         </div>
                         <div class="col-md-3 text-center mb-3 mb-md-0">

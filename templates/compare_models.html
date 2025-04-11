@@ -1,0 +1,73 @@
+<!-- templates/compare_models.html -->
+{% extends 'base.html' %}
+
+{% block title %}Spam Detective - Compare Models{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Compare Spam Detection Models</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Note:</strong> This will train multiple models on the same dataset and compare their performance. This process may take several minutes to complete. Make sure you have loaded your dataset first.
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>Models that will be compared:</h5>
+                            <ul>
+                                <li><strong>Traditional ML:</strong> Logistic Regression, Naive Bayes, Random Forest</li>
+                                <li><strong>Gradient Boosting:</strong> XGBoost, LightGBM</li>
+                                <li><strong>Ensemble Methods:</strong> Voting Classifier, Stacking Classifier</li>
+                                <li><strong>Deep Learning:</strong> LSTM with Word Embeddings, CNN with Word Embeddings</li>
+                            </ul>
+                            <p class="text-muted">BERT is excluded from automatic comparison due to its resource intensity.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Warning:</strong> This operation is computationally intensive and may take a while to complete.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <h5>What will be compared:</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>Accuracy:</strong> Overall correct predictions</li>
+                                        <li><strong>Precision:</strong> Accuracy of spam predictions</li>
+                                        <li><strong>Recall:</strong> Ability to find all spam emails</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li><strong>F1 Score:</strong> Balance between precision and recall</li>
+                                        <li><strong>Training Time:</strong> Time taken to train the model</li>
+                                        <li><strong>Model Efficiency:</strong> Performance relative to time</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form action="{{ url_for('compare_models') }}" method="post">
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-play me-2"></i>Start Model Comparison
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

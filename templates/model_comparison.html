@@ -1,0 +1,172 @@
+<!-- templates/model_comparison.html -->
+{% extends 'base.html' %}
+
+{% block title %}Spam Detective - Model Comparison Results{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Model Comparison Results</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Model comparison completed successfully! Here are the results of training and evaluating multiple spam detection models.
+                    </div>
+                    
+                    <!-- Performance Metrics Chart -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h5>Performance Metrics Comparison:</h5>
+                            <div class="text-center mt-3">
+                                <img src="data:image/png;base64,{{ results.metrics_image }}" class="img-fluid" alt="Performance Metrics Comparison">
+                            </div>
+                            <div class="alert alert-info mt-2">
+                                <i class="fas fa-info-circle me-2"></i>
+                                This chart compares accuracy, precision, recall, and F1 score across different models. Higher values indicate better performance.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Training Time Chart -->
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <h5>Training Time Comparison:</h5>
+                            <div class="text-center mt-3">
+                                <img src="data:image/png;base64,{{ results.time_image }}" class="img-fluid" alt="Training Time Comparison">
+                            </div>
+                            <div class="alert alert-info mt-2">
+                                <i class="fas fa-info-circle me-2"></i>
+                                This chart shows the training time for each model in seconds. Lower values indicate faster training.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Efficiency Chart -->
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <h5>Model Efficiency: F1 Score vs. Training Time</h5>
+                            <div class="text-center mt-3">
+                                <img src="data:image/png;base64,{{ results.efficiency_image }}" class="img-fluid" alt="Model Efficiency">
+                            </div>
+                            <div class="alert alert-info mt-2">
+                                <i class="fas fa-info-circle me-2"></i>
+                                This chart plots F1 score against training time. Models in the top-left are the most efficient (high performance with low training time).
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Detailed Results Table -->
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <h5>Detailed Results:</h5>
+                            <div class="table-responsive mt-3">
+                                <table class="table table-striped table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Model</th>
+                                            <th>Category</th>
+                                            <th>Accuracy</th>
+                                            <th>Precision</th>
+                                            <th>Recall</th>
+                                            <th>F1 Score</th>
+                                            <th>Training Time (s)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in range(results.raw_data.models|length) %}
+                                        <tr>
+                                            <td>{{ results.raw_data.models[i] }}</td>
+                                            <td>
+                                                <span class="badge 
+                                                    {% if results.raw_data.model_type[i] == 'Traditional ML' %}
+                                                        bg-primary
+                                                    {% elif results.raw_data.model_type[i] == 'Gradient Boosting' %}
+                                                        bg-success
+                                                    {% elif results.raw_data.model_type[i] == 'Ensemble Methods' %}
+                                                        bg-danger
+                                                    {% else %}
+                                                        bg-warning
+                                                    {% endif %}
+                                                ">
+                                                    {{ results.raw_data.model_type[i] }}
+                                                </span>
+                                            </td>
+                                            <td>{{ "%.4f"|format(results.raw_data.accuracy[i]) }}</td>
+                                            <td>{{ "%.4f"|format(results.raw_data.precision[i]) }}</td>
+                                            <td>{{ "%.4f"|format(results.raw_data.recall[i]) }}</td>
+                                            <td>{{ "%.4f"|format(results.raw_data.f1[i]) }}</td>
+                                            <td>{{ "%.2f"|format(results.raw_data.training_time[i]) }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Key Insights -->
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <div class="card bg-light">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Key Insights</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul>
+                                        <li><strong>Best Overall Performance:</strong> 
+                                            {% set best_f1_index = results.raw_data.f1.index(results.raw_data.f1|max) %}
+                                            {{ results.raw_data.models[best_f1_index] }} (F1 Score: {{ "%.4f"|format(results.raw_data.f1[best_f1_index]) }})
+                                        </li>
+                                        <li><strong>Fastest Model:</strong>
+                                            {% set fastest_index = results.raw_data.training_time.index(results.raw_data.training_time|min) %}
+                                            {{ results.raw_data.models[fastest_index] }} ({{ "%.2f"|format(results.raw_data.training_time[fastest_index]) }} seconds)
+                                        </li>
+                                        <li><strong>Most Efficient:</strong> Best balance of performance vs. training time</li>
+                                        <li><strong>Traditional ML Models:</strong> Generally faster but may have lower performance</li>
+                                        <li><strong>Deep Learning Models:</strong> Higher performance but require more training time</li>
+                                    </ul>
+                                </div>
+                                <!-- Add error handling in the table to check if arrays are empty -->
+                                {% if results.raw_data.models|length > 0 %}
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-striped table-bordered">
+                                        <!-- Table content -->
+                                    </table>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-warning mt-3">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    No model comparison data available. There may have been errors during model training.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Next Steps -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h5>Next Steps:</h5>
+                            <div class="d-grid gap-2 d-md-flex mt-3">
+                                <a href="{{ url_for('train_model') }}" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-cogs me-2"></i>Train Selected Model
+                                </a>
+                                <a href="{{ url_for('detect_spam') }}" class="btn btn-success btn-lg">
+                                    <i class="fas fa-search me-2"></i>Detect Spam
+                                </a>
+                                <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-home me-2"></i>Return to Home
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

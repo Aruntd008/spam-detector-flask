@@ -26,6 +26,13 @@
                                         <th style="width: 30%">Algorithm</th>
                                         <td>
                                             <span class="model-badge">{{ stats.model_type }}</span>
+                                            {% if 'LSTM' in stats.model_type or 'CNN' in stats.model_type or 'BERT' in stats.model_type %}
+                                                <span class="badge bg-danger">Deep Learning</span>
+                                            {% elif 'Ensemble' in stats.model_type %}
+                                                <span class="badge bg-primary">Ensemble</span>
+                                            {% elif 'XGBoost' in stats.model_type or 'LightGBM' in stats.model_type %}
+                                                <span class="badge bg-info">Gradient Boosting</span>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     <tr>
@@ -40,6 +47,19 @@
                                         <th>Test Set Size</th>
                                         <td>{{ stats.test_size }} emails</td>
                                     </tr>
+                                    {% if stats.best_params %}
+                                    <tr>
+                                        <th>Hyperparameter Tuning</th>
+                                        <td>
+                                            <strong>Best Parameters:</strong>
+                                            <ul class="mb-0">
+                                                {% for param, value in stats.best_params.items() %}
+                                                <li>{{ param.replace('classifier__', '') }}: {{ value }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
                                 </tbody>
                             </table>
                         </div>
@@ -108,6 +128,201 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Model-Specific Information -->
+                    {% if 'Word Embeddings' in stats.model_type or 'BERT' in stats.model_type %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-brain me-2"></i>Advanced Model Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if 'LSTM' in stats.model_type %}
+                                    <p>Your LSTM (Long Short-Term Memory) neural network model uses Word2Vec embeddings to capture semantic relationships between words and understand sequential patterns in text.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Model Architecture:</h6>
+                                            <ul>
+                                                <li>Embedding layer with pre-trained Word2Vec vectors</li>
+                                                <li>Spatial Dropout for regularization</li>
+                                                <li>LSTM layer to capture sequential dependencies</li>
+                                                <li>Dense output layer with sigmoid activation</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Key Advantages:</h6>
+                                            <ul>
+                                                <li>Understands context and word relationships</li>
+                                                <li>Captures long-distance dependencies in text</li>
+                                                <li>Better handles semantic meaning than traditional models</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {% elif 'CNN' in stats.model_type %}
+                                    <p>Your Convolutional Neural Network (CNN) model uses Word2Vec embeddings to capture local patterns and n-gram features in text.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Model Architecture:</h6>
+                                            <ul>
+                                                <li>Embedding layer with pre-trained Word2Vec vectors</li>
+                                                <li>1D Convolutional layer to capture local patterns</li>
+                                                <li>Global Max Pooling to extract the most important features</li>
+                                                <li>Dense hidden layer with ReLU activation</li>
+                                                <li>Dense output layer with sigmoid activation</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Key Advantages:</h6>
+                                            <ul>
+                                                <li>Efficiently identifies local text patterns</li>
+                                                <li>Faster training than LSTM models</li>
+                                                <li>Good at capturing n-gram-like features</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {% elif 'BERT' in stats.model_type %}
+                                    <p>Your BERT (Bidirectional Encoder Representations from Transformers) model uses state-of-the-art transformer architecture to understand contextual word relationships.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Model Architecture:</h6>
+                                            <ul>
+                                                <li>Pre-trained BERT base model</li>
+                                                <li>Fine-tuned on your spam dataset</li>
+                                                <li>Dense hidden layer with ReLU activation</li>
+                                                <li>Dense output layer with sigmoid activation</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Key Advantages:</h6>
+                                            <ul>
+                                                <li>Superior understanding of context in both directions</li>
+                                                <li>Pre-trained on massive text corpora</li>
+                                                <li>State-of-the-art performance for text classification</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif 'Ensemble' in stats.model_type %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0"><i class="fas fa-layer-group me-2"></i>Ensemble Model Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if 'Voting' in stats.model_type %}
+                                    <p>Your Voting Ensemble combines multiple models to make predictions, reducing variance and improving overall performance.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Component Models:</h6>
+                                            <ul>
+                                                <li>Logistic Regression</li>
+                                                <li>Naive Bayes</li>
+                                                <li>Random Forest</li>
+                                                <li>XGBoost</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Key Advantages:</h6>
+                                            <ul>
+                                                <li>Reduces overfitting through model averaging</li>
+                                                <li>Combines strengths of different algorithms</li>
+                                                <li>More robust to outliers and noise</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {% elif 'Stacking' in stats.model_type %}
+                                    <p>Your Stacking Ensemble uses predictions from multiple base models as features for a meta-learner, creating a hierarchical model structure.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Architecture:</h6>
+                                            <ul>
+                                                <li><strong>Base Models:</strong> 
+                                                    <ul>
+                                                        <li>Logistic Regression</li>
+                                                        <li>Naive Bayes</li>
+                                                        <li>Random Forest</li>
+                                                    </ul>
+                                                </li>
+                                                <li><strong>Meta-Learner:</strong> XGBoost</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Key Advantages:</h6>
+                                            <ul>
+                                                <li>Leverages strengths of diverse algorithms</li>
+                                                <li>Meta-learner focuses on correcting base model mistakes</li>
+                                                <li>Often achieves higher accuracy than individual models</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif 'XGBoost' in stats.model_type or 'LightGBM' in stats.model_type %}
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Gradient Boosting Model Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if 'XGBoost' in stats.model_type %}
+                                    <p>Your XGBoost (Extreme Gradient Boosting) model uses an ensemble of decision trees with gradient boosting, offering high performance and accuracy.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Key Features:</h6>
+                                            <ul>
+                                                <li>Regularization to prevent overfitting</li>
+                                                <li>Parallel processing for faster training</li>
+                                                <li>Handling of missing values</li>
+                                                <li>Tree pruning for optimal model complexity</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Advantages:</h6>
+                                            <ul>
+                                                <li>Excellent performance on structured data</li>
+                                                <li>Robust to outliers and noisy data</li>
+                                                <li>Handles high-dimensional sparse data well</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {% elif 'LightGBM' in stats.model_type %}
+                                    <p>Your LightGBM (Light Gradient Boosting Machine) model uses a highly efficient gradient boosting implementation with leaf-wise tree growth.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Key Features:</h6>
+                                            <ul>
+                                                <li>Leaf-wise tree growth strategy</li>
+                                                <li>Histogram-based algorithm for finding splits</li>
+                                                <li>Gradient-based one-side sampling</li>
+                                                <li>Categorical feature optimization</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Advantages:</h6>
+                                            <ul>
+                                                <li>Faster training speed than other boosting methods</li>
+                                                <li>Lower memory usage</li>
+                                                <li>Handles large datasets efficiently</li>
+                                                <li>Competitive accuracy with XGBoost</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                     
                     <!-- Next Steps -->
                     <div class="row mt-4">

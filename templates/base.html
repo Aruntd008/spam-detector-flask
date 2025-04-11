@@ -176,6 +176,11 @@
                             <i class="fas fa-search me-1"></i>Detect Spam
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('compare_models') }}">
+                            <i class="fas fa-chart-bar me-1"></i>Compare Models
+                        </a>
+                    </li>
                 </ul>
                 <div class="d-flex">
                     {% if model_loaded %}

@@ -3,6 +3,10 @@
 
 {% block title %}Spam Detective - Analysis Result{% endblock %}
 
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row mb-4">
@@ -26,6 +30,17 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Model Information -->
+                    {% if result.model_type %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Model:</strong> {{ result.model_type }}
+                        {% if 'Deep Learning' in result.model_type %}
+                        <span class="badge bg-danger ms-2">Deep Learning</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
 
                     <!-- Email Statistics -->
                     <div class="mt-4">
@@ -70,17 +85,28 @@
                     {% if result.important_features %}
                     <div class="mt-4">
                         <h5>Key Features that Influenced Classification:</h5>
-                        <div class="row mt-3">
-                            {% for feature in result.important_features %}
-                            <div class="col-md-6 mb-3">
-                                <div class="feature-item {{ 'feature-spam' if feature.coefficient > 0 else 'feature-ham' }}">
-                                    <strong>"{{ feature.feature }}"</strong>
-                                    <span class="float-end badge {{ 'bg-danger' if feature.coefficient > 0 else 'bg-success' }}">
-                                        {{ 'Indicates Spam' if feature.coefficient > 0 else 'Indicates Ham' }}
-                                    </span>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row mt-3">
+                                    {% for feature in result.important_features %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="feature-item {{ 'feature-spam' if feature.coefficient > 0 else 'feature-ham' }}">
+                                            <strong>"{{ feature.feature }}"</strong>
+                                            <span class="float-end badge {{ 'bg-danger' if feature.coefficient > 0 else 'bg-success' }}">
+                                                {{ 'Indicates Spam' if feature.coefficient > 0 else 'Indicates Ham' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                            {% endfor %}
+                            <div class="col-md-4">
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <canvas id="featureChart" width="100%" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {% endif %}
@@ -157,5 +183,146 @@
             </div>
         </div>
     </div>
+
+    <!-- Advanced Model Information Card -->
+    {% if result.model_type %}
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0"><i class="fas fa-brain me-2"></i>Advanced Model Analysis</h4>
+                </div>
+                <div class="card-body">
+                    {% if 'Deep Learning' in result.model_type %}
+                    <p>This analysis was performed using a deep learning model that understands semantic relationships between words and recognizes complex patterns in text.</p>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h5>How This Model Works:</h5>
+                            <ul>
+                                <li>Words are converted to numerical vectors that capture their meaning</li>
+                                <li>The model analyzes patterns in these vectors to identify spam characteristics</li>
+                                <li>Neural networks identify complex relationships that traditional models might miss</li>
+                                <li>The model was trained on thousands of examples to learn the difference between spam and legitimate emails</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Advantages of Deep Learning:</h5>
+                            <ul>
+                                <li>Better understanding of context and semantic meaning</li>
+                                <li>More robust to variations in wording and phrasing</li>
+                                <li>Higher accuracy for complex spam patterns</li>
+                                <li>Less reliance on explicit feature engineering</li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% elif 'Ensemble' in result.model_type %}
+                    <p>This analysis was performed using an ensemble of multiple machine learning models, combining their predictions for improved accuracy and robustness.</p>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h5>How Ensemble Models Work:</h5>
+                            <ul>
+                                <li>Multiple different algorithms analyze the email independently</li>
+                                <li>Each algorithm contributes a prediction based on its unique approach</li>
+                                <li>These predictions are combined using voting or stacking techniques</li>
+                                <li>The final decision leverages the strengths of each individual model</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Benefits of Ensemble Approach:</h5>
+                            <ul>
+                                <li>Higher accuracy than individual models</li>
+                                <li>Reduced risk of false positives and negatives</li>
+                                <li>More stable predictions across different types of emails</li>
+                                <li>Greater resilience to unusual or edge cases</li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% elif 'XGBoost' in result.model_type or 'LightGBM' in result.model_type %}
+                    <p>This analysis was performed using a gradient boosting model that builds an ensemble of decision trees sequentially, with each new tree correcting errors made by previous trees.</p>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h5>How Gradient Boosting Works:</h5>
+                            <ul>
+                                <li>Builds hundreds of decision trees in sequence</li>
+                                <li>Each new tree focuses on correctly classifying examples that previous trees misclassified</li>
+                                <li>The trees are combined to form a powerful predictive model</li>
+                                <li>Includes regularization techniques to prevent overfitting</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Advantages of this Approach:</h5>
+                            <ul>
+                                <li>State-of-the-art performance on classification tasks</li>
+                                <li>Handles both numerical and categorical features well</li>
+                                <li>Robust to outliers and noisy data</li>
+                                <li>Offers insights into feature importance</li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{% if result.important_features %}
+<script>
+    // Create feature importance chart
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('featureChart').getContext('2d');
+        
+        // Extract feature data
+        var features = [];
+        var coefficients = [];
+        var backgroundColors = [];
+        
+        {% for feature in result.important_features[:5] %}
+            features.push("{{ feature.feature }}");
+            
+            {% if feature.coefficient is defined %}
+                coefficients.push({{ feature.coefficient }});
+                backgroundColors.push({{ feature.coefficient }} > 0 ? 'rgba(220, 53, 69, 0.7)' : 'rgba(40, 167, 69, 0.7)');
+            {% elif feature.importance is defined %}
+                coefficients.push({{ feature.importance }});
+                backgroundColors.push('rgba(0, 123, 255, 0.7)');
+            {% endif %}
+        {% endfor %}
+        
+        // Create chart
+        var featureChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: features,
+                datasets: [{
+                    label: 'Feature Importance',
+                    data: coefficients,
+                    backgroundColor: backgroundColors,
+                    borderColor: backgroundColors.map(color => color.replace('0.7', '1')),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Top 5 Influential Features'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endif %}
 {% endblock %}
